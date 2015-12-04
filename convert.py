@@ -12,6 +12,7 @@ nagios_file = nagios_file.readlines()
 
 resources = []
 
+
 def parse_graphite(check_cmd):
     check = check_cmd.split('!')
     return {'command': check[0].lstrip('check_'), 'period': check[1], 'warn': check[2], 'crit': check[3], 'target': check[4]}
