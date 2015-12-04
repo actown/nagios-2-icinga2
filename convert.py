@@ -2,9 +2,11 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--in', dest='in_file')
+parser.add_argument('--out', dest='out_file')
 args = parser.parse_args()
 
 nagios_file = open(args.in_file, 'r')
+icinga_file = open(args.out_file, 'w')
 
 nagios_file = nagios_file.readlines()
 
@@ -41,4 +43,4 @@ for resource in resources:
 
     assign where host.name == \"%s\"
 }""" % (resource['service_name'].replace(' ', '_').lower(), resource['service_name'], graphite['target'], graphite['period'], graphite['warn'], graphite['crit'], graphite['command'], resource['host_name'])
-        print text
+    icinga_file.write(text)
