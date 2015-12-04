@@ -18,15 +18,17 @@ def parse_graphite(check_cmd):
     return {'command': check[0].lstrip('check_'), 'period': check[1], 'warn': check[2], 'crit': check[3], 'target': check[4]}
 
 for line in nagios_file:
-    if 'define service {' in line:
+    if line[0] is '#':
+        continue
+    elif 'define service {' in line:
         nagios_object = {'host_name': '', 'service_name': '', 'check_command': ''}
-    if 'host_name' in line:
+    elif 'host_name' in line:
         nagios_object['host_name'] = line.strip().lstrip('host_name').strip()
-    if 'service_description' in line:
+    elif 'service_description' in line:
         nagios_object['service_name'] = line.strip().lstrip('service_description').strip()
-    if 'check_command' in line:
+    elif 'check_command' in line:
         nagios_object['check_command'] = line.strip().lstrip('check_command').strip()
-    if '}' in line:
+    elif '}' in line:
         resources.append(nagios_object)
 
 for resource in resources:
@@ -43,5 +45,6 @@ for resource in resources:
     check_command = \"%s\"
 
     assign where host.name == \"%s\"
-}""" % (resource['service_name'].replace(' ', '_').lower(), resource['service_name'], graphite['target'], graphite['period'], graphite['warn'], graphite['crit'], graphite['command'], resource['host_name'])
+}
+""" % (resource['service_name'].replace(' ', '_').lower(), resource['service_name'], graphite['target'], graphite['period'], graphite['warn'], graphite['crit'], graphite['command'], resource['host_name'])
     icinga_file.write(text)
