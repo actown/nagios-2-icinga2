@@ -40,6 +40,7 @@ for resource in resources:
     if 'check_graphite' in resource['check_command']:
         graphite = parse_graphite(resource['check_command'])
         text = """apply Service \"%s\" {
+    import "graphite-service"
     display_name = \"%s\"
 
     vars.graphite_target = \"%s\"
